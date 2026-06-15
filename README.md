@@ -1,4 +1,4 @@
-Currently at: routing and navigation!
+Currently at: 53:51
 
 # Welcome to your Expo app 👋
 
