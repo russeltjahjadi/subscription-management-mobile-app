@@ -1,4 +1,4 @@
-Currently at: 53:51
+Currently at: 1:14:00
 
 # Welcome to your Expo app 👋
 
