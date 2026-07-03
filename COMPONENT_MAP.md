@@ -6,26 +6,26 @@ This file gives you a simple visual model of the app structure, screens, and sha
 
 ```mermaid
 flowchart TD
-    A[app/_layout.tsx<br/>RootLayout] --> B[Expo Router Stack]
-    B --> C[app/onboarding.tsx]
-    B --> D[app/(auth)/_layout.tsx]
-    B --> E[app/(tabs)/_layout.tsx]
+    A["app/_layout.tsx<br/>RootLayout"] --> B["Expo Router Stack"]
+    B --> C["app/onboarding.tsx"]
+    B --> D["Auth layout"]
+    B --> E["Tabs layout"]
 
-    D --> F[app/(auth)/sign-in.tsx]
-    D --> G[app/(auth)/sign-up.tsx]
+    D --> F["Sign in"]
+    D --> G["Sign up"]
     F --> G
     G --> F
 
-    E --> H[app/(tabs)/index.tsx<br/>Home]
-    E --> I[app/(tabs)/subscriptions.tsx]
-    E --> J[app/(tabs)/insights.tsx]
-    E --> K[app/(tabs)/settings.tsx]
+    E --> H["Home screen"]
+    E --> I["Subscriptions screen"]
+    E --> J["Insights screen"]
+    E --> K["Settings screen"]
 
-    H --> L[constants/data.ts]
-    H --> M[constants/icons.ts]
-    H --> N[constants/images.ts]
-    H --> O[lib/utils.ts]
-    H --> P[constants/theme.ts]
+    H --> L["constants/data.ts"]
+    H --> M["constants/icons.ts"]
+    H --> N["constants/images.ts"]
+    H --> O["lib/utils.ts"]
+    H --> P["constants/theme.ts"]
 
     E --> P
     I --> P
