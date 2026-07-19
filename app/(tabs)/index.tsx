@@ -1,4 +1,4 @@
-import { HOME_BALANCE, HOME_USER } from "@/constants/data";
+import { HOME_BALANCE, HOME_USER, UPCOMING_SUBSCRIPTIONS } from "@/constants/data";
 import { icons } from "@/constants/icons";
 import images from "@/constants/images";
 import { formatCurrency } from "@/lib/utils";
@@ -7,10 +7,12 @@ import { styled } from "nativewind";
 import React from "react";
 import { Image, Text, View } from "react-native";
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
+import ListHeading from "../components/ListHeading";
+import UpcomingSubscriptionCard from "../components/UpcomingSubscriptionCard";
 
 const SafeAreaView = styled(RNSafeAreaView);
 
-export default function Index() {
+export default function App() {
   return (
     <SafeAreaView className="flex-1 bg-background p-5">
       <View className="home-header">
@@ -33,6 +35,15 @@ export default function Index() {
             {dayjs(HOME_BALANCE.nextRenewalDate).format("MM/DD")}
           </Text>
         </View>
+      </View>
+
+      <View>
+        <ListHeading title="Upcoming" />
+        <UpcomingSubscriptionCard data={UPCOMING_SUBSCRIPTIONS[0]} />
+      </View>
+
+      <View>
+        <ListHeading title="All Subscriptions" />
       </View>
     </SafeAreaView>
   );
