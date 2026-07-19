@@ -3,7 +3,11 @@ import React from "react";
 import { Image, Text, View } from "react-native";
 
 const UpcomingSubscriptionCard = ({
-  data: { name, price, daysLeft, icon, currency },
+  name,
+  price,
+  daysLeft,
+  icon,
+  currency,
 }: UpcomingSubscription) => {
   return (
     <View className="upcoming-card">
