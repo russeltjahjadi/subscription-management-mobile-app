@@ -148,7 +148,7 @@ export default function SignUp() {
 
       <View style={styles.linkRow}>
         <Text>Already have an account? </Text>
-        <Link href="/(auth)/sign-in">Sign in</Link>
+        <Link dismissTo href="/(auth)/sign-in">Sign in</Link>
       </View>
     </View>
   );

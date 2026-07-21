@@ -13,5 +13,15 @@ export default function AuthRoutesLayout() {
     return <Redirect href="/" />;
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen
+        name="sign-up"
+        options={{
+          presentation: "modal",
+          animation: "slide_from_bottom",
+        }}
+      />
+    </Stack>
+  );
 }
