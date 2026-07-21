@@ -11,28 +11,47 @@ import {
 } from "react-native";
 
 export default function SignIn() {
-  const { signIn, errors, fetchStatus } = useSignIn();
+  const { signIn, fetchStatus } = useSignIn();
   const router = useRouter();
 
-  const [emailAddress, setEmailAddress] = React.useState("");
+  const [identifier, setIdentifier] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [submitError, setSubmitError] = React.useState<string | null>(null);
 
   const handleSubmit = async () => {
-    const { error } = await signIn.password({ emailAddress, password });
-    if (error) {
-      console.error(JSON.stringify(error, null, 2));
-      return;
-    }
+    setSubmitError(null);
 
-    if (signIn.status === "complete") {
-      await signIn.finalize({
-        navigate: ({ session, decorateUrl }) => {
-          if (session?.currentTask) return;
-          const url = decorateUrl("/");
-          if (url.startsWith("http")) window.location.href = url;
-          else router.push(url as any);
-        },
+    try {
+      const { error } = await signIn.password({
+        identifier,
+        password,
       });
+
+      if (error) {
+        setSubmitError(error.message ?? "Unable to sign in.");
+        return;
+      }
+
+      if (signIn.status === "complete" && signIn.createdSessionId) {
+        await signIn.finalize({
+          navigate: ({ session, decorateUrl }) => {
+            if (session?.currentTask) return;
+            const url = decorateUrl("/");
+            if (url.startsWith("http")) {
+              window.location.href = url;
+            } else {
+              router.push(url as any);
+            }
+          },
+        });
+        return;
+      }
+
+      setSubmitError("Sign-in is not complete yet. Please try again.");
+    } catch (error: any) {
+      setSubmitError(
+        error?.errors?.[0]?.message ?? error?.message ?? "Unable to sign in.",
+      );
     }
   };
 
@@ -47,9 +66,9 @@ export default function SignIn() {
       <TextInput
         style={styles.input}
         autoCapitalize="none"
-        value={emailAddress}
-        placeholder="Email"
-        onChangeText={setEmailAddress}
+        value={identifier}
+        placeholder="Email or username"
+        onChangeText={setIdentifier}
         keyboardType="email-address"
       />
       <TextInput
@@ -60,19 +79,21 @@ export default function SignIn() {
         onChangeText={setPassword}
       />
 
+      {submitError ? <Text style={styles.error}>{submitError}</Text> : null}
+
       <Pressable
         style={({ pressed }) => [
           styles.button,
           pressed && styles.buttonPressed,
         ]}
         onPress={handleSubmit}
-        disabled={!emailAddress || !password || fetchStatus === "fetching"}
+        disabled={!identifier || !password || fetchStatus === "fetching"}
       >
         <Text style={styles.buttonText}>Continue</Text>
       </Pressable>
 
       <View style={styles.linkRow}>
-        <Text>Don't have an account? </Text>
+        <Text>Don&apos;t have an account? </Text>
         <Link href="/(auth)/sign-up">Sign up</Link>
       </View>
 
@@ -100,6 +121,7 @@ const styles = StyleSheet.create({
   buttonPressed: { opacity: 0.8 },
   buttonText: { color: "#fff", fontWeight: "600" },
   linkRow: { flexDirection: "row", marginTop: 12, alignItems: "center" },
+  error: { color: "red", marginTop: 8, fontSize: 13 },
   debug: { marginTop: 12, color: "#666", fontSize: 12 },
   logo: { width: 88, height: 88, alignSelf: "center", marginBottom: 8 },
   appName: {
