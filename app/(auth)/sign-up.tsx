@@ -52,7 +52,13 @@ export default function SignUp() {
           signUp.unverifiedFields.includes("email_address")
         ) {
           if (signUp.verifications?.sendEmailCode) {
-            await signUp.verifications.sendEmailCode();
+            const { error } = await signUp.verifications.sendEmailCode();
+            if (error) {
+              setSubmitError(
+                (error as any)?.message ?? "Failed to send verification code.",
+              );
+              return;
+            }
             setSubmitError("A verification code was sent to your email.");
           } else {
             setSubmitError(
@@ -64,7 +70,13 @@ export default function SignUp() {
           signUp.unverifiedFields.includes("phone_number")
         ) {
           if (signUp.verifications?.sendPhoneCode) {
-            await signUp.verifications.sendPhoneCode();
+            const { error } = await signUp.verifications.sendPhoneCode();
+            if (error) {
+              setSubmitError(
+                (error as any)?.message ?? "Failed to send verification code.",
+              );
+              return;
+            }
             setSubmitError("A verification code was sent to your phone.");
           } else {
             setSubmitError(

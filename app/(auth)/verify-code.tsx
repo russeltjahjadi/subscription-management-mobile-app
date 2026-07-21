@@ -76,7 +76,13 @@ export default function VerifyCode() {
 
     try {
       if (signUp.verifications?.sendEmailCode) {
-        await signUp.verifications.sendEmailCode();
+        const { error } = await signUp.verifications.sendEmailCode();
+        if (error) {
+          setSubmitError(
+            (error as any)?.message ?? "Failed to resend verification code.",
+          );
+          return;
+        }
         setSubmitError("Verification code resent to your email.");
       } else {
         setSubmitError("Unable to resend verification code.");

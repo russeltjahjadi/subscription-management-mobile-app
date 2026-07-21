@@ -5,6 +5,7 @@ import { clsx } from "clsx";
 import { Redirect, Tabs } from "expo-router";
 import React from "react";
 import { Image, View } from "react-native";
+import LoadingFallback from "@/components/LoadingFallback";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const tabBar = components.tabBar;
@@ -14,7 +15,7 @@ const TabLayout = () => {
 
   const { isSignedIn, isLoaded } = useAuth();
 
-  if (!isLoaded) return null;
+  if (!isLoaded) return <LoadingFallback />;
 
   if (!isSignedIn) return <Redirect href={"/(auth)/sign-in"} />;
 
