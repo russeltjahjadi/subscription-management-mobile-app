@@ -1,17 +1,16 @@
-import "@/global.css";
 import { useAuth } from "@clerk/expo";
-import { Redirect, Stack } from "expo-router";
+import { Redirect } from "expo-router";
 import React from "react";
 import LoadingFallback from "@/components/LoadingFallback";
 
-export default function AuthRoutesLayout() {
+export default function Index() {
   const { isLoaded, isSignedIn } = useAuth();
 
   if (!isLoaded) return <LoadingFallback />;
 
   if (isSignedIn) {
-    return <Redirect href="/" />;
+    return <Redirect href="/(tabs)" />;
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return <Redirect href="/(auth)/sign-in" />;
 }

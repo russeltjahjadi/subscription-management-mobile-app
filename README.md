@@ -1,4 +1,6 @@
-Currently at: 2:24:14
+Currently at: 2:37:00
+
+CURRENT PROGRESS - Hmm, trying to figure out this authentication thing with Clerk Authentication
 
 # Welcome to your Expo app 👋
 
