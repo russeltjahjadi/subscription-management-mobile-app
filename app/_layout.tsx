@@ -1,10 +1,39 @@
 import "@/global.css";
-import { ClerkProvider } from "@clerk/expo";
+import { ClerkProvider, useUser } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import React, { useEffect } from "react";
+import { PostHogProvider } from "posthog-react-native";
+import { posthog } from "@/lib/posthog";
 SplashScreen.preventAutoHideAsync();
+
+function PostHogIdentity() {
+  const { isLoaded, isSignedIn, user } = useUser();
+
+  useEffect(() => {
+    if (!posthog || !isLoaded || !isSignedIn || !user?.id) {
+      return;
+    }
+
+    posthog.identify(user.id, {
+      ...(user.primaryEmailAddress?.emailAddress
+        ? { email: user.primaryEmailAddress.emailAddress }
+        : {}),
+      ...(user.firstName ? { first_name: user.firstName } : {}),
+      ...(user.lastName ? { last_name: user.lastName } : {}),
+    });
+  }, [
+    isLoaded,
+    isSignedIn,
+    user?.id,
+    user?.firstName,
+    user?.lastName,
+    user?.primaryEmailAddress?.emailAddress,
+  ]);
+
+  return null;
+}
 
 export default function RootLayout() {
   const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
@@ -31,7 +60,14 @@ export default function RootLayout() {
 
   return (
     <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-      <Stack screenOptions={{ headerShown: false }} />
+      {posthog ? (
+        <PostHogProvider client={posthog}>
+          <PostHogIdentity />
+          <Stack screenOptions={{ headerShown: false }} />
+        </PostHogProvider>
+      ) : (
+        <Stack screenOptions={{ headerShown: false }} />
+      )}
     </ClerkProvider>
   );
 }

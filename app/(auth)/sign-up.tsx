@@ -1,5 +1,6 @@
 import { useSignUp } from "@clerk/expo";
 import { Link, useRouter } from "expo-router";
+import { posthog } from "@/lib/posthog";
 import React from "react";
 import {
   Image,
@@ -33,6 +34,7 @@ export default function SignUp() {
 
   const handleSubmit = async () => {
     setSubmitError(null);
+    posthog?.capture("sign_up_submitted");
     const { error } = await signUp.password({ emailAddress, password });
 
     if (error) {
@@ -59,6 +61,9 @@ export default function SignUp() {
               );
               return;
             }
+            posthog?.capture("sign_up_verification_sent", {
+              verification_method: "email",
+            });
             setSubmitError("A verification code was sent to your email.");
           } else {
             setSubmitError(
@@ -77,6 +82,9 @@ export default function SignUp() {
               );
               return;
             }
+            posthog?.capture("sign_up_verification_sent", {
+              verification_method: "phone",
+            });
             setSubmitError("A verification code was sent to your phone.");
           } else {
             setSubmitError(
@@ -100,6 +108,7 @@ export default function SignUp() {
       await signUp.finalize({
         navigate: ({ session, decorateUrl }) => {
           if (session?.currentTask) return;
+          posthog?.capture("sign_up_completed");
           handleFinalizeNavigate(decorateUrl, session);
         },
       });
@@ -148,7 +157,13 @@ export default function SignUp() {
 
       <View style={styles.linkRow}>
         <Text>Already have an account? </Text>
-        <Link dismissTo href="/(auth)/sign-in">Sign in</Link>
+        <Link
+          dismissTo
+          href="/(auth)/sign-in"
+          onPress={() => posthog?.capture("sign_in_link_selected")}
+        >
+          Sign in
+        </Link>
       </View>
     </View>
   );

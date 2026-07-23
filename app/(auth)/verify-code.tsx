@@ -1,5 +1,6 @@
 import { useSignUp } from "@clerk/expo";
 import { Link, useRouter } from "expo-router";
+import { posthog } from "@/lib/posthog";
 import React from "react";
 import {
   Image,
@@ -57,6 +58,7 @@ export default function VerifyCode() {
         await signUp.finalize({
           navigate: ({ session, decorateUrl }) => {
             if (session?.currentTask) return;
+            posthog?.capture("email_verification_completed");
             handleFinalizeNavigate(decorateUrl, session);
           },
         });
@@ -83,6 +85,9 @@ export default function VerifyCode() {
           );
           return;
         }
+        posthog?.capture("verification_code_resent", {
+          verification_method: "email",
+        });
         setSubmitError("Verification code resent to your email.");
       } else {
         setSubmitError("Unable to resend verification code.");
@@ -146,7 +151,12 @@ export default function VerifyCode() {
 
       <View style={styles.linkRow}>
         <Text>Already have an account? </Text>
-        <Link href="/(auth)/sign-in">Sign in</Link>
+        <Link
+          href="/(auth)/sign-in"
+          onPress={() => posthog?.capture("sign_in_link_selected")}
+        >
+          Sign in
+        </Link>
       </View>
     </View>
   );

@@ -1,5 +1,6 @@
 import { useSignIn } from "@clerk/expo";
 import { Link, useRouter } from "expo-router";
+import { posthog } from "@/lib/posthog";
 import React from "react";
 import {
   Image,
@@ -36,6 +37,7 @@ export default function SignIn() {
         await signIn.finalize({
           navigate: ({ session, decorateUrl }) => {
             if (session?.currentTask) return;
+            posthog?.capture("sign_in_completed");
             const url = decorateUrl("/");
             if (url.startsWith("http")) {
               window.location.href = url;
@@ -94,7 +96,12 @@ export default function SignIn() {
 
       <View style={styles.linkRow}>
         <Text>Don&apos;t have an account? </Text>
-        <Link href="/(auth)/sign-up">Sign up</Link>
+        <Link
+          href="/(auth)/sign-up"
+          onPress={() => posthog?.capture("sign_up_link_selected")}
+        >
+          Sign up
+        </Link>
       </View>
 
       {/* {errors && <Text style={styles.debug}>{JSON.stringify(errors, null, 2)}</Text>} */}
