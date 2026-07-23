@@ -1,4 +1,4 @@
-Currently at: 2:37:00
+Currently at: 3:10:00
 
 CURRENT PROGRESS - Hmm, trying to figure out this authentication thing with Clerk Authentication
 
